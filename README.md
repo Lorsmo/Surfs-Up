@@ -1,50 +1,11 @@
 
 
-```python
-# Imports
-%matplotlib inline
-from matplotlib import style
-style.use('fivethirtyeight')
-import matplotlib.pyplot as plt
-```
 
 
-```python
-import numpy as np
-import pandas as pd
-from scipy.stats import ttest_ind, ttest_rel
-```
 
 
-```python
-import calendar
-import datetime as dt
-from datetime import timedelta
-```
 
 # Reflect Tables into SQLAlchemy ORM
-
-
-```python
-# Python SQL toolkit and Object Relational Mapper
-import sqlalchemy
-from sqlalchemy.ext.automap import automap_base
-from sqlalchemy.orm import Session
-from sqlalchemy import create_engine, func, inspect
-```
-
-
-```python
-engine = create_engine("sqlite:///Resources/hawaii.sqlite")
-```
-
-
-```python
-# reflect an existing database into a new model
-Base = automap_base()
-# reflect the tables
-Base.prepare(engine, reflect=True)
-```
 
 
 ```python
@@ -58,19 +19,6 @@ Base.classes.keys()
     ['measurement', 'station']
 
 
-
-
-```python
-# Save references to each table
-Measurement = Base.classes.measurement
-Station = Base.classes.station
-```
-
-
-```python
-# Create our session (link) from Python to the DB
-session = Session(engine)
-```
 
 ## Explore Database
 
@@ -111,34 +59,11 @@ for c in columns:
 
 
 
-```python
-engine.execute('SELECT * FROM station LIMIT 5').fetchall()
-```
 
 
 
 
-    [(1, 'USC00519397', 'WAIKIKI 717.2, HI US', 21.2716, -157.8168, 3.0),
-     (2, 'USC00513117', 'KANEOHE 838.1, HI US', 21.4234, -157.8015, 14.6),
-     (3, 'USC00514830', 'KUALOA RANCH HEADQUARTERS 886.9, HI US', 21.5213, -157.8374, 7.0),
-     (4, 'USC00517948', 'PEARL CITY, HI US', 21.3934, -157.9751, 11.9),
-     (5, 'USC00518838', 'UPPER WAHIAWA 874.3, HI US', 21.4992, -158.0111, 306.6)]
 
-
-
-
-```python
-engine.execute('SELECT * FROM measurement LIMIT 5').fetchall()
-```
-
-
-
-
-    [(1, 'USC00519397', '2010-01-01', 0.08, 65.0),
-     (2, 'USC00519397', '2010-01-02', 0.0, 63.0),
-     (3, 'USC00519397', '2010-01-03', 0.0, 74.0),
-     (4, 'USC00519397', '2010-01-04', 0.0, 76.0),
-     (5, 'USC00519397', '2010-01-06', None, 73.0)]
 
 
 
@@ -150,9 +75,6 @@ engine.execute('SELECT * FROM measurement LIMIT 5').fetchall()
 
 
 ```python
-# Calculate the date 1 year ago from the last data point in the database
-last_date = session.query(Measurement).order_by(Measurement.date.desc()).first().date
-first_date = (pd.to_datetime(last_date) - timedelta(days=365)).date()
 print(f'Last Date Recorded: {last_date}\nDate one year before: {first_date}')
 ```
 
@@ -177,14 +99,6 @@ df = df.sort_values(['Dates'])
 
 ```python
 # Use Pandas Plotting with Matplotlib to plot the data
-df.plot.line(fontsize = 12, figsize=(10,7))
-plt.ylabel('Precipitation (inch)')
-plt.title(label=f'Precipitations From {first_date} to {last_date}', fontsize = 18)
-plt.tick_params(labelsize = 15, axis="y",direction="in")
-plt.legend(loc='best', prop={'size': 15})
-plt.tight_layout()
-plt.savefig(f"Figures/Precipitations_{first_date}_{last_date}.png")
-plt.show()
 ```
 
 <p align="center">
@@ -248,9 +162,6 @@ df.describe()
 
 
 ```python
-# Design a query to show how many stations are available in this dataset?
-count_stations = session.query(Measurement.station).\
-    group_by(Measurement.station).count()
 print("{} stations are available in this dataset.".format(count_stations))
 ```
 
@@ -258,15 +169,7 @@ print("{} stations are available in this dataset.".format(count_stations))
 
 
 * Design a query to find the most active stations.
-    * List the stations and observation counts in descending order.
-
-
-```python
-# Design a query to get the stations and their observations count
-active_stations = session.query(Station.name, Measurement.station, func.count(Measurement.station)).\
-                    filter(Station.station == Measurement.station).\
-                    group_by(Measurement.station).\
-                    order_by(func.count(Measurement.station).desc()).all()                                 
+    * List the stations and observation counts in descending order.                             
 ```
 
 
