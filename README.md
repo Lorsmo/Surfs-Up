@@ -49,23 +49,14 @@ print(f'Last Date Recorded: {last_date}\nDate one year before: {first_date}')
     Last Date Recorded: 2017-08-23
     Date one year before: 2016-08-23
 
-```python
-# Perform a query to retrieve the data and precipitation scores
-
-```
-
-```python
-# Use Pandas Plotting with Matplotlib to plot the data
-```
 
 <p align="center">
   <img src="Figures/Precipitations_2016-08-23_2017-08-23.png">
 </p>
 
-```python
-# Use Pandas to calcualte the summary statistics for the precipitation data
-df.describe()
-```
+
+* Use Pandas to calculate the summary statistics for the precipitation data
+
 
 <table border="1" class="dataframe">
   <thead>
@@ -127,12 +118,12 @@ print("{} stations are available in this dataset.".format(count_stations))
 
 * Design a query to find the most active stations.
     * List the stations and observation counts in descending order.                             
-```
 
 
-```python
-# Save the query results as a Pandas DataFrame and set the index to the station ID column
-```
+
+
+* Save the query results as a Pandas DataFrame and set the index to the station ID column
+
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -219,9 +210,8 @@ print("The station {} (ID:{}) has the highest number of observations with {} obs
     The highest temperature recorded in WAIHEE 837.5, HI US is 85.0° F
 
 
-* Design a query to retrieve the last 12 months of temperature observation data (tobs) for the most active station
+* Design a query to retrieve the last 12 months of temperature observation data for the most active station and plot the results
 
-```
 <p align="center">
   <img src="Figures/Frequency_temperatures_WAIHEE 837.5, HI US_2016-08-23 - 2017-08-23.png">
 </p>
