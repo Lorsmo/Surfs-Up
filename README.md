@@ -1,49 +1,28 @@
 
-
-
-
-
-
-
 # Reflect Tables into SQLAlchemy ORM
-
 
 ```python
 # We can view all of the classes that automap found
 Base.classes.keys()
 ```
-
-
-
-
     ['measurement', 'station']
 
-
-
 ## Explore Database
-
-
 ```python
 inspector = inspect(engine)
 ```
-
-
 ```python
 # Get a list of column names and types for "station"
 columns = inspector.get_columns('station')
 for c in columns:
     print(c['name'], c["type"])
 ```
-
     id INTEGER
     station TEXT
     name TEXT
     latitude FLOAT
     longitude FLOAT
     elevation FLOAT
-
-
-
 ```python
 # Get a list of column names and types for "measurement"
 columns = inspector.get_columns('measurement')
@@ -57,22 +36,11 @@ for c in columns:
     prcp FLOAT
     tobs FLOAT
 
-
-
-
-
-
-
-
-
-
-
 # Climate Analysis and Exploration
 
 ## Precipitation Analysis
 
 * Design a query to retrieve the last 12 months of precipitation data and plot the results
-
 
 ```python
 print(f'Last Date Recorded: {last_date}\nDate one year before: {first_date}')
@@ -81,21 +49,10 @@ print(f'Last Date Recorded: {last_date}\nDate one year before: {first_date}')
     Last Date Recorded: 2017-08-23
     Date one year before: 2016-08-23
 
-
-
 ```python
 # Perform a query to retrieve the data and precipitation scores
-datas = session.query(Measurement.date, Measurement.prcp).filter(Measurement.date >= first_date)
+
 ```
-
-
-```python
-# Save the query results as a Pandas DataFrame and set the index to the date column
-df = pd.DataFrame(datas, columns=['Dates', 'Precipitations'])
-df.set_index('Dates', inplace=True)
-df = df.sort_values(['Dates'])
-```
-
 
 ```python
 # Use Pandas Plotting with Matplotlib to plot the data
@@ -175,9 +132,6 @@ print("{} stations are available in this dataset.".format(count_stations))
 
 ```python
 # Save the query results as a Pandas DataFrame and set the index to the station ID column
-active_df = pd.DataFrame(active_stations, columns=["Station Name", "Station ID", "Observations Count"])
-active_df.set_index("Station ID", inplace=True)
-active_df
 ```
 <table border="1" class="dataframe">
   <thead>
@@ -242,19 +196,7 @@ active_df
 </table>
 </div>
 
-
-
 * Which station has the highest number of observations?
-
-
-```python
-# Design a query to find the most active station
-most_active= session.query(Station.name, Measurement.station, func.count(Measurement.station)).\
-                    filter(Station.station == Measurement.station).\
-                    group_by(Measurement.station).\
-                    order_by(func.count(Measurement.station).desc()).first()  
-```
-
 
 ```python
 print("The station {} (ID:{}) has the highest number of observations with {} observations.".\
@@ -269,13 +211,6 @@ print("The station {} (ID:{}) has the highest number of observations with {} obs
 
 
 ```python
-# Design a query to get the lowest, highest and average temperature recorded for the most active station
-query_temp = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
-    filter(Measurement.station == most_active[1]).all()
-
-records = ["lowest", "average", "highest"]
-for results in query_temp:
-    for i in range(len(results)):
         print(f"The {records[i]} temperature recorded in {most_active[0]} is {results[i]:.1f}° F")
 ```
 
@@ -286,27 +221,6 @@ for results in query_temp:
 
 * Design a query to retrieve the last 12 months of temperature observation data (tobs) for the most active station
 
-
-```python
-# Query the last 12 months of temperature observation data for the station with the highest number of temperature observations.
-twelve_months = session.query(Measurement.tobs).\
-    filter((Measurement.station == most_active[1]), (Measurement.date > first_date)).all()
-
-# Convert the query results in a DataFrame
-df_twelve = pd.DataFrame(twelve_months)
-
-# Plot the results as a histogram
-df_twelve.plot.hist(bins=12, title=f"Frequency of Temperatures in {most_active[0]} \n {first_date} / {last_date}",
-                   figsize=(10,9))
-plt.tick_params(labelsize = 15, direction="in")
-plt.legend(loc=2, prop={'size': 15})
-
-plt.ylabel('Frequency', fontsize=16)
-plt.ylim((0,70))
-plt.xlabel('Temperatures (°F)', fontsize=16)
-plt.savefig(f"Figures/Frequency_temperatures_{most_active[0]}_{first_date}_{last_date}.png")
-plt.show()
-
 ```
 <p align="center">
   <img src="Figures/Frequency_temperatures_WAIHEE 837.5, HI US_2016-08-23 - 2017-08-23.png">
@@ -316,40 +230,7 @@ plt.show()
 
 Identify the average temperature in June and December at all stations across all available years in the dataset.
 
-
 ```python
-# Create a function which return a list of temperatures for the month chosen by the user
-def monthly_list(month_number):
-    """Monthly List.
-    
-    Args:
-        month_number (str): A date string in the format '%m'
-        
-    Returns:
-        A list of temperatures for this month at all stations across all available years in the dataset.
-    
-    """
-    return session.query(Measurement.tobs).\
-                         filter(func.strftime("%m", Measurement.date) == month_number).all()
-```
-
-
-```python
-# Ask the user which two months have to be to compare (June and December in this case) 
-while True:
-    try:
-        number_month1 = input("First month in format MM ?   ")
-        print(f'Month of {calendar.month_name[int(number_month1)]} selected')
-        number_month2 = input("Second month in format MM ?   ")
-        print(f'Month of {calendar.month_name[int(number_month2)]} selected')
-        break
-    except (ValueError, IndexError):
-        print(f'Input {number_month1} does not match format MM (e.g. 01 for January)')
-
-# Calculate the mean for each of both months
-means_month1 = np.mean(monthly_list(number_month1))
-means_month2 = np.mean(monthly_list(number_month2))
-
 # Print the average temperature at all stations across all available years in the dataset for both months.
 print(f"The average temperature is {means_month1:.1f} for {calendar.month_name[int(number_month1)]} \
 and {means_month2:.1f} for {calendar.month_name[int(number_month2)]}.")
@@ -364,24 +245,6 @@ and {means_month2:.1f} for {calendar.month_name[int(number_month2)]}.")
 
 In order to determine whether the difference in the means is statistically significant, the unpaired t-test (Student t-test) has been chosen. Even if we have records from the same stations, we don't have the same number of records in each of these two months.
 
-
-```python
-# t-test
-(t_stat, p) = ttest_ind(monthly_list(number_month1), monthly_list(number_month2), equal_var=False)
-print(f't-stat = {t_stat} ; p = {p}')
-if p < 0.001:
-    print(f"The differences of means between {calendar.month_name[int(number_month1)]} \
-and {calendar.month_name[int(number_month2)]} ARE statistically highly significant.")
-    
-elif p < 0.05:
-    print(f"The differences of means between {calendar.month_name[int(number_month1)]} \
-and {calendar.month_name[int(number_month2)]} ARE statistically significant.")
-    
-else:
-    print(f"The differences of means between {calendar.month_name[int(number_month1)]} \
-and {calendar.month_name[int(number_month2)]} ARE NOT statistically significant.")
-```
-
     t-stat = [31.35503692] ; p = [4.19352984e-187]
     The differences of means between June and December ARE statistically highly significant.
 
@@ -392,46 +255,6 @@ Calculate the min, avg, and max temperatures for the trip using the last matchin
 
 
 ```python
-# Ask the user about the trip start date and how many days of holidays in order to calculate the last matching dates
-while True:
-    try:
-        start_trip = input("Trip start in MM/DD/YYYY format?   ") # Define the trip start date with the user's input
-        
-        start_trip = (pd.to_datetime(start_trip)).date() # Convert the input in datetime format
-        
-        if start_trip > dt.date.today() : # If the date chosen is after today, OK
-            start_trip1 = start_trip.strftime("%a %d %b, %Y") # Convert the date format with day name 
-            print(start_trip1) # Print the new format         
-            break
-        
-        # If not, return to the input
-        else:
-            print('The date has passed')
-    except ValueError: # If the date doesn't match the format asked
-        print(f'time data {start_trip} does not match format MM/DD/YYYY')
-
-while True:
-    try:
-        # Ask the number of days of holidays
-        number_days = int(input("How many days?   "))
-        # If  <= 3 number <= 15, OK 
-        if 3 <= number_days <= 15:
-            print('Enjoy!')
-            break
-        
-        # If not, return to the input
-        else:
-            print('Make sure that your vacation range is approximately 3-15 days total')
-    
-    except ValueError: # If the date doesn't match the format asked
-        print(f'{number_days} is not a digit - please try again.') 
-
-# Calculate the end trip date
-end_trip = (start_trip + timedelta(days=number_days))
-
-# Convert the end trip date format with day name 
-end_trip1 = end_trip.strftime("%a %d %b, %Y")
-
 # Print the trip dates
 print(f"You plan to go to Honolulu, Hawaii from {start_trip1} to {end_trip1}")
 ```
@@ -442,26 +265,6 @@ print(f"You plan to go to Honolulu, Hawaii from {start_trip1} to {end_trip1}")
     Enjoy!
     You plan to go to Honolulu, Hawaii from Wed 14 Jul, 2021 to Wed 21 Jul, 2021
 
-
-
-```python
-# Find the last matching dates availables
-
-# While the match end trip date for the previous year is not in the dataset (> last date in the dataset)
-counter_year = 1 # Create the counter for year
-while (pd.to_datetime(end_trip)- timedelta(days= counter_year*365.25) > (pd.to_datetime(last_date))):
-
-    #counter + 1
-    counter_year +=1
-
-# When the matching last day trip
-else:
-    # Calculate the matching start and end date trip 
-    start_date = (pd.to_datetime(start_trip)- timedelta(days=counter_year*365.25)).date()
-    end_date = (pd.to_datetime(end_trip)- timedelta(days=counter_year*365.25)).date()
-```
-
-
 ```python
 # Print the dayes selected to query
 print(f"Period used to query will be: {start_date} to {end_date}")
@@ -469,33 +272,7 @@ print(f"Period used to query will be: {start_date} to {end_date}")
 
     Period used to query will be: 2017-07-14 to 2017-07-21
 
-
-
 ```python
-# This function called `calc_temps` will accept start date and end date in the format '%Y-%m-%d' 
-
-def calc_temps(start_date, end_date):
-    """TMIN, TAVG, and TMAX for a list of dates.
-    
-    Args:
-        start_date (string): A date string in the format %Y-%m-%d
-        end_date (string): A date string in the format %Y-%m-%d
-        
-    Returns:
-        TMIN, TAVE, and TMAX
-    """
-   # Return the minimum, average, and maximum temperatures for the range of dates 
-    return session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
-        filter(Measurement.date >= start_date).filter(Measurement.date <= end_date).all()
-```
-
-
-```python
-# Use your previous function `calc_temps` to calculate the tmin, tavg, and tmax 
-# for your trip using the last matching data for those same dates.
-print(f"Between {start_date} and {end_date}:")
-for results in calc_temps(start_date, end_date):
-    for i in range(len(results)):
         print(f"The {records[i]} temperature recorded is {results[i]:.1f}° F")
 ```
 
@@ -504,20 +281,8 @@ for results in calc_temps(start_date, end_date):
     The average temperature recorded is 78.6° F
     The highest temperature recorded is 83.0° F
 
-
-
 ```python
 # Plot the results from your previous query as a bar chart. 
-plt.figure(figsize=(6,9))
-x = (f"{start_date} / {end_date}")
-plt.bar(x, results[1], width=0.5, align='center', yerr = (results[2]-results[0]), color='lightsalmon')
-plt.title('Trip Avg Temp', fontsize = 20)
-plt.ylabel('Temperature (°F)', fontsize = 15)
-plt.tick_params(labelsize = 15)
-plt.xlim(-0.5,0.5)
-plt.ylim(0,100)
-plt.savefig(f"Figures/Avg_temp_{start_date}_{end_date}.png")
-plt.show()
 ```
 
 <p align="center">
@@ -528,30 +293,9 @@ plt.show()
 ## Daily Rainfall Average
 Calculate the rainfall per weather station using the previous year's matching dates.
 
-
-
-```python
-# Select the values we are interested for
-sel = [Station.station, Station.name, Station.latitude, 
-   Station.longitude, Station.elevation, func.sum(Measurement.prcp)]
-
-# Query the selection, join the precipitation from Measurement table with the filter and select the period
-rainfall = session.query(*sel).\
-    group_by(Station.station).\
-    order_by(func.sum(Measurement.prcp).desc()).\
-    filter(Station.station == Measurement.station).\
-    filter(Measurement.date >= start_date).filter(Measurement.date <= end_date).all() 
-```
-
-
 ```python
 # Build a DataFrame with the previous query and set the index on Station ID
-rainfall_df = pd.DataFrame(rainfall, columns=['Station ID', 'Station Name', 'Latitude', 'Longitude',
-                                              'Elevation', f'Precipitations {start_date} / {end_date}'])
-rainfall_df.set_index(['Station ID'])
 ```
-
-
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -636,70 +380,7 @@ rainfall_df.set_index(['Station ID'])
 
 ## Optional Challenge Assignment
 
-Calculate the daily normals for the trip
-
-
-```python
-# Create a query that will calculate the daily normals
-def daily_normals(date):
-    """Daily Normals.
-    Args:
-        date (str): A date string in the format '%m-%d'
-    Returns:
-        A list of tuples containing the daily normals, tmin, tavg, and tmax
-    """
-    sel = [func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)]
-    return session.query(*sel).filter(func.strftime("%m-%d", Measurement.date) == date).all()
-```
-
-
-```python
-# Create a list for the the range of dates
-dates_m_d = []
-datesmd = []
-# Use the start and number days to create a range of dates
-for i in range(number_days+1):
-    date_trip = ((start_date) + timedelta(days=i))
-    dates_m_d.append(date_trip.strftime("%m-%d")) # Stip off the year and save a list of %m-%d strings
-    datesmd.append(date_trip.strftime("%B %d"))
-# Create a list of daily normals 
-normals = []
-
-# Loop through the list of %m-%d strings and calculate the normals and put them into the list
-for dates in dates_m_d:
-    normals.append(daily_normals(dates))
-```
-
-
-```python
-# Load the previous query results into a Pandas DataFrame and add the `trip_dates` range as the `date` index
-tmin = [(value[0][0]) for value in normals]
-tavg = [(value[0][1]) for value in normals]
-tmax = [(value[0][2]) for value in normals]
-
-df = pd.DataFrame({"Date": datesmd, "T.min": tmin, "T.avg": tavg, "T.max": tmax}).set_index("Date")
-```
-
-
-```python
-# Convert date in format name_month-date
-start = start_date.strftime("%B %d")
-end = end_date.strftime("%B %d")
-
-# Plot the daily normals as an area plot with `stacked=False`
-pal = ["blue", "darkorange", "gold"]
-df.plot.area(stacked=False, figsize=(10,8), zorder=0, color=pal, alpha=0.5 )
-plt.ylabel('Temperatures (°F)', fontsize = 15)
-plt.title(f'Evolution of Temperatures in Hawaii\n {start} - {end}', fontsize = 20)
-plt.ylim(45,95)
-plt.legend(loc=2, prop={'size': 15})
-plt.grid(color='white', linestyle='dotted', linewidth=1, zorder=5)
-plt.tick_params(labelsize = 15)
-
-plt.savefig(f"Figures/Evolution_temperatures_{start}_{end}.png")
-plt.show()
-```
-
+Calculate the daily normals for the trip and plot them as an area plot with `stacked=False`
 
 <p align="center">
   <img src="Figures/Evolution_temperatures_July 14 - July 21.png">
