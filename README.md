@@ -1,13 +1,12 @@
 
-# Reflect Tables into SQLAlchemy ORM
+# Explore Database
 
 ```python
 # We can view all of the classes that automap found
 Base.classes.keys()
 ```
     ['measurement', 'station']
-
-## Explore Database
+    
 ```python
 inspector = inspect(engine)
 ```
@@ -116,13 +115,8 @@ print("{} stations are available in this dataset.".format(count_stations))
     9 stations are available in this dataset.
 
 
-* Design a query to find the most active stations.
+
     * List the stations and observation counts in descending order.                             
-
-
-
-
-* Save the query results as a Pandas DataFrame and set the index to the station ID column
 
 <table border="1" class="dataframe">
   <thead>
@@ -198,7 +192,7 @@ print("The station {} (ID:{}) has the highest number of observations with {} obs
 
 
 * For the station with the highest number of observations, calculate:
-    * lowest, highest and average temperature recorded
+    * Lowest, highest and average temperature recorded
 
 
 ```python
@@ -279,13 +273,21 @@ print(f"Period used to query will be: {start_date} to {end_date}")
   <img src="Figures/Avg_temp_2017-07-14_2017-07-21.png">
 </p>
 
+## Temperature Analysis III
+
+Calculate the daily normals for the trip and plot them as an area plot with `stacked=False`
+
+<p align="center">
+  <img src="Figures/Evolution_temperatures_July 14 - July 21.png">
+</p>
+
 
 ## Daily Rainfall Average
 Calculate the rainfall per weather station using the previous year's matching dates.
 
-```python
-# Build a DataFrame with the previous query and set the index on Station ID
-```
+
+Build a DataFrame with the previous query and set the index on Station ID
+
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -366,18 +368,3 @@ Calculate the rainfall per weather station using the previous year's matching da
 </table>
 </div>
 
-
-
-## Optional Challenge Assignment
-
-Calculate the daily normals for the trip and plot them as an area plot with `stacked=False`
-
-<p align="center">
-  <img src="Figures/Evolution_temperatures_July 14 - July 21.png">
-</p>
-
-
-
-```python
-
-```
