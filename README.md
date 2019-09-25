@@ -187,10 +187,9 @@ plt.savefig(f"Figures/Precipitations_{first_date}_{last_date}.png")
 plt.show()
 ```
 
-
-![png](output_22_0.png)
-
-
+<p align="center">
+  <img src="Figures/Precipitations_2016-08-23_2017-08-23.png">
+</p>
 
 ```python
 # Use Pandas to calcualte the summary statistics for the precipitation data
@@ -406,10 +405,9 @@ plt.savefig(f"Figures/Frequency_temperatures_{most_active[0]}_{first_date}_{last
 plt.show()
 
 ```
-
-
-![png](output_36_0.png)
-
+<p align="center">
+  <img src="Figures/Frequency_temperatures_WAIHEE 837.5, HI US_2016-08-23 - 2017-08-23.png">
+</p>
 
 ## Temperature Analysis I
 
@@ -619,8 +617,9 @@ plt.savefig(f"Figures/Avg_temp_{start_date}_{end_date}.png")
 plt.show()
 ```
 
-
-![png](output_48_0.png)
+<p align="center">
+  <img src="Figures/Avg_temp_2017-07-14_2017-07-21.png">
+</p>
 
 
 ## Daily Rainfall Average
@@ -799,7 +798,9 @@ plt.show()
 ```
 
 
-![png](output_57_0.png)
+<p align="center">
+  <img src="Figures/Evolution_temperatures_July 14 - July 21.png">
+</p>
 
 
 
