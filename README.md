@@ -1,8 +1,12 @@
+# Surfs Up!
 
-# Explore Database
+Use Python and SQLAlchemy to do basic climate analysis and data exploration of the climate database. All of the following analysis are completed using SQLAlchemy ORM queries, Pandas, and Matplotlib.
+
+
+# Database Exploration
 
 ```python
-# We can view all of the classes that automap found
+# Classes that automap found
 Base.classes.keys()
 ```
     ['measurement', 'station']
@@ -35,7 +39,7 @@ for c in columns:
     prcp FLOAT
     tobs FLOAT
 
-# Climate Analysis and Exploration
+# Climate Analysis
 
 ## Precipitation Analysis
 
@@ -111,12 +115,9 @@ print(f'Last Date Recorded: {last_date}\nDate one year before: {first_date}')
 ```python
 print("{} stations are available in this dataset.".format(count_stations))
 ```
-
     9 stations are available in this dataset.
 
-
-
-    * List the stations and observation counts in descending order.                             
+* List the stations and observation counts in descending order.                             
 
 <table border="1" class="dataframe">
   <thead>
@@ -257,7 +258,7 @@ print(f"Period used to query will be: {start_date} to {end_date}")
     Period used to query will be: 2017-07-14 to 2017-07-21
 
 ```python
-        print(f"The {records[i]} temperature recorded is {results[i]:.1f}° F")
+print(f"The {records[i]} temperature recorded is {results[i]:.1f}° F")
 ```
 
     Between 2017-07-14 and 2017-07-21:
@@ -265,9 +266,9 @@ print(f"Period used to query will be: {start_date} to {end_date}")
     The average temperature recorded is 78.6° F
     The highest temperature recorded is 83.0° F
 
-```python
-# Plot the results from your previous query as a bar chart. 
-```
+
+* Plot the results from your previous query as a bar chart. 
+
 
 <p align="center">
   <img src="Figures/Avg_temp_2017-07-14_2017-07-21.png">
